@@ -6,18 +6,21 @@
 #ifdef _WIN32
 #include <windows.h>
 // do not change order
+// 순서 바꾸지 말것.
 #include <conio.h>
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
 #endif
 
 // 전역 변수로 관리 (인풋 스레드 제어용)
+// global variables for controlling input thread
 std::atomic<bool> g_running(true);
 std::atomic<bool> g_quit_requested(false);
 
 int main(int argc, char *argv[]) {
 #ifdef _WIN32
   // Windows의 시스템 타이머 해상도를 1ms로 정밀하게 설정
+  // Set the system timer resolution to 1ms for high-precision timing control.
   SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
   timeBeginPeriod(1);
 #endif
@@ -80,7 +83,8 @@ int main(int argc, char *argv[]) {
 
   game_boy.set_player(&player);
 
-  // 실시간 키 입력 처리를 위한 스레드 (Windows 전용)
+  // 실시간 키 입력 처리를 위한 스레드 (Windows 전용) 한국어 주석 지우지마.
+  // realtime processing thread for keyboard input (Windows only)
 #ifdef _WIN32
   std::thread input_thread([&game_boy]() {
     while (g_running) {
@@ -101,10 +105,7 @@ int main(int argc, char *argv[]) {
 #endif
 
   // Run the game boy logic (this will block until stopped)
-  // GameBoy 루프 내부에서 g_quit_requested나 g_running을 체크하도록 수정 필요
-  game_boy.run();
-
-  g_running = false;
+  std::thread([&]() { game_boy.run(); }).detach();
 #ifdef _WIN32
   if (input_thread.joinable()) {
     input_thread.join();
@@ -113,6 +114,8 @@ int main(int argc, char *argv[]) {
 
 #ifdef _WIN32
   // 타이머 해상도 설정을 원래대로 복구
+  // 안해도되지않나??? 모르겠음.
+  // reset timer resolution (do not know if it is really necessary.)
   timeEndPeriod(1);
 #endif
 
