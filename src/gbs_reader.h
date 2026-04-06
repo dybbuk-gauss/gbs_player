@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include <exception>
+#include <stdexcept>
 
 class ParsingError : public std::runtime_error {
 public:

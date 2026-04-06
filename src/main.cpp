@@ -4,10 +4,9 @@
 #include <string>
 
 #ifdef _WIN32
-#include <windows.h>
-// do not change order
-// 순서 바꾸지 말것.
 #include <conio.h>
+#include <windows.h> // fixed position.
+// windows.h must be included before mmsystem.h
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
 #endif
