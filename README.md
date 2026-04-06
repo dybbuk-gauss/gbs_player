@@ -2,33 +2,16 @@
 
 A program for playing Game Boy sound (.gbs) files.
 
-Do note that this is very much a work in progress.
-
-## TODO
-
-* Proper sound filter & resampling
-* Game Boy Color support
-* Platform independent controls
-* Pass blargg's sound tests
-* Sound visualizations
+modified for windows compatibility
+from Original repository : https://github.com/frestr/gbs-player 
 
 ## Compile
-
-Dependencies:
-
-* libao (for audio output)
 
 To compile, do
 
 ```
-make
+cmake --build build --config Release
 ```
-
-in the project root directory.
-
-To compile with debugging support, [gbz80-disasm](https://github.com/frestr/gbz80-disasm) must configured.
-
-Note: Only works on Linux for now, as the terminal controls are platform dependent.
 
 ## Usage
 
@@ -36,7 +19,7 @@ Run the program with your .gbs file as an argument:
 
 ```
 $ ./player 
-Usage: ./player <gbs-file>
+Usage: ./player <gbs-file> <track number>
 ```
 
 ### Controls

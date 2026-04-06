@@ -1,2 +1,5 @@
 player
 *.o
+.old
+build
+bin
