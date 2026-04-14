@@ -5,10 +5,9 @@
 
 #ifdef _WIN32
 #include <conio.h>
-#include <windows.h> // fixed position.
-// windows.h must be included before mmsystem.h
-#include <mmsystem.h>
-#pragma comment(lib, "winmm.lib")
+#include <windows.h>
+// #include <mmsystem.h>
+// #pragma comment(lib, "winmm.lib")
 #endif
 
 // 전역 변수로 관리 (인풋 스레드 제어용)
@@ -16,107 +15,107 @@
 std::atomic<bool> g_running(true);
 std::atomic<bool> g_quit_requested(false);
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
 #ifdef _WIN32
-  // Windows의 시스템 타이머 해상도를 1ms로 정밀하게 설정
-  // Set the system timer resolution to 1ms for high-precision timing control.
-  SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
-  timeBeginPeriod(1);
+	// Windows의 시스템 타이머 해상도를 1ms로 정밀하게 설정
+	// Set the system timer resolution to 1ms for high-precision timing control.
+	SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+	timeBeginPeriod(1);
 #endif
 
-  if (argc < 2) {
-    std::cout << "Usage: " << argv[0] << " <gbs-file> [track-number]\n";
-    return 1;
-  }
+	if (argc < 2) {
+		std::cout << "Usage: " << argv[0] << " <gbs-file> [track-number]\n";
+		return 1;
+	}
 
-  // Load the specified file
-  GBSReader reader;
-  try {
-    reader.load_file(argv[1]);
-  } catch (std::exception &e) {
-    std::cout << "Error while loading file: " << e.what() << "\n";
-    std::cout << "Quitting...\n";
-    return 1;
-  }
+	// Load the specified file
+	GBSReader reader;
+	try {
+		reader.load_file(argv[1]);
+	} catch (std::exception& e) {
+		std::cout << "Error while loading file: " << e.what() << "\n";
+		std::cout << "Quitting...\n";
+		return 1;
+	}
 
-  // Print the file's metadata
-  reader.print_metadata(true);
+	// Print the file's metadata
+	reader.print_metadata(true);
 
-  GBSContent content = reader.get_content();
+	GBSContent content = reader.get_content();
 
-  // Determine the track to play
-  uint8_t track = content.first_song;
-  if (argc >= 3) {
-    try {
-      int t = std::stoi(argv[2]);
-      if (t >= 1 && t <= content.num_songs) {
-        track = static_cast<uint8_t>(t);
-      } else {
-        std::cout << "Invalid track number. Playing default track "
-                  << (int)track << ".\n";
-      }
-    } catch (...) {
-      std::cout << "Invalid track argument. Playing default track "
-                << (int)track << ".\n";
-    }
-  }
+	// Determine the track to play
+	uint8_t track = content.first_song;
+	if (argc >= 3) {
+		try {
+			int t = std::stoi(argv[2]);
+			if (t >= 1 && t <= content.num_songs) {
+				track = static_cast<uint8_t>(t);
+			} else {
+				std::cout << "Invalid track number. Playing default track "
+						  << (int)track << ".\n";
+			}
+		} catch (...) {
+			std::cout << "Invalid track argument. Playing default track "
+					  << (int)track << ".\n";
+		}
+	}
 
-  std::cout << "Playing track " << (int)track << " of "
-            << (int)content.num_songs << "...\n";
-  std::cout << "Press Ctrl+C to stop.\n";
+	std::cout << "Playing track " << (int)track << " of "
+			  << (int)content.num_songs << "...\n";
+	std::cout << "Press Ctrl+C to stop.\n";
 
-  // Set the track in the content manually since GameBoy constructor uses
-  // first_song
-  content.first_song = track;
+	// Set the track in the content manually since GameBoy constructor uses
+	// first_song
+	content.first_song = track;
 
-  GameBoy game_boy(content);
-  Player player(game_boy.get_mixer());
+	GameBoy game_boy(content);
+	Player player(game_boy.get_mixer());
 
-  // Initialize the sound player
-  try {
-    player.init();
-  } catch (std::exception &e) {
-    std::cout << e.what() << "\n";
-    return 1;
-  };
+	// Initialize the sound player
+	try {
+		player.init();
+	} catch (std::exception& e) {
+		std::cout << e.what() << "\n";
+		return 1;
+	};
 
-  game_boy.set_player(&player);
+	game_boy.set_player(&player);
 
-  // 실시간 키 입력 처리를 위한 스레드 (Windows 전용) 한국어 주석 지우지마.
-  // realtime processing thread for keyboard input (Windows only)
+// 실시간 키 입력 처리를 위한 스레드 (Windows 전용)
+// realtime processing thread for keyboard input (Windows only)
 #ifdef _WIN32
-  std::thread input_thread([&game_boy]() {
-    while (g_running) {
-      if (_kbhit()) {
-        int ch = _getch();
-        if (ch == 'n' || ch == 'N') {
-          game_boy.next_song();
-        } else if (ch == 'p' || ch == 'P') {
-          game_boy.prev_song();
-        } else if (ch == 'q' || ch == 'Q') {
-          g_quit_requested = true;
-          break;
-        }
-      }
-      std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    }
-  });
+	std::thread input_thread([&game_boy]() {
+		while (g_running) {
+			if (_kbhit()) {
+				int ch = _getch();
+				if (ch == 'n' || ch == 'N') {
+					game_boy.next_song();
+				} else if (ch == 'p' || ch == 'P') {
+					game_boy.prev_song();
+				} else if (ch == 'q' || ch == 'Q') {
+					g_quit_requested = true;
+					break;
+				}
+			}
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		}
+	});
 #endif
 
-  // Run the game boy logic (this will block until stopped)
-  std::thread([&]() { game_boy.run(); }).detach();
+	// Run the game boy logic (this will block until stopped)
+	std::thread([&]() { game_boy.run(); }).detach();
 #ifdef _WIN32
-  if (input_thread.joinable()) {
-    input_thread.join();
-  }
+	if (input_thread.joinable()) {
+		input_thread.join();
+	}
 #endif
 
 #ifdef _WIN32
-  // 타이머 해상도 설정을 원래대로 복구
-  // 안해도되지않나??? 모르겠음.
-  // reset timer resolution (do not know if it is really necessary.)
-  timeEndPeriod(1);
+	// 타이머 해상도 설정을 원래대로 복구
+	// 안해도되지않나??? 모르겠음.
+	// reset timer resolution (do not know if it is really necessary.)
+	timeEndPeriod(1);
 #endif
 
-  return 0;
+	return 0;
 }

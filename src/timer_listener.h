@@ -2,8 +2,7 @@
 
 class Timer;
 
-class TimerListener
-{
-public:
-    virtual void clock(Timer* timer) = 0;
+class TimerListener {
+  public:
+	virtual void clock(Timer* timer) = 0;
 };

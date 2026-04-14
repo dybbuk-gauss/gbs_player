@@ -2,14 +2,14 @@
 
 // NOP
 void CPU::opcode_0x00() {
-  // No operation
+	// No operation
 }
 
 // LD BC,nn
 void CPU::opcode_0x01() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  set_BC(high, low);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	set_BC(high, low);
 }
 
 // LD (BC),A
@@ -32,10 +32,10 @@ void CPU::opcode_0x07() { rlc(state.a, true); }
 
 // LD (nn),SP
 void CPU::opcode_0x08() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  memory_write((high << 8) | low, state.sp & 0xFF);
-  memory_write(((high << 8) | low) + 1, (state.sp >> 8) & 0xFF);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	memory_write((high << 8) | low, state.sp & 0xFF);
+	memory_write(((high << 8) | low) + 1, (state.sp >> 8) & 0xFF);
 }
 
 // ADD HL,BC
@@ -61,15 +61,15 @@ void CPU::opcode_0x0F() { rrc(state.a, true); }
 
 // STOP
 void CPU::opcode_0x10() {
-  pc_read();
-  stopped = true;
+	pc_read();
+	stopped = true;
 }
 
 // LD DE,nn
 void CPU::opcode_0x11() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  set_DE(high, low);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	set_DE(high, low);
 }
 
 // LD (DE),A
@@ -92,8 +92,8 @@ void CPU::opcode_0x17() { rl(state.a, true); }
 
 // JR n
 void CPU::opcode_0x18() {
-  uint8_t offset = pc_read();
-  jump(state.pc + static_cast<int8_t>(offset), true);
+	uint8_t offset = pc_read();
+	jump(state.pc + static_cast<int8_t>(offset), true);
 }
 
 // ADD HL,DE
@@ -119,21 +119,21 @@ void CPU::opcode_0x1F() { rr(state.a, true); }
 
 // JR NZ,n
 void CPU::opcode_0x20() {
-  uint8_t offset = pc_read();
-  jump(state.pc + static_cast<int8_t>(offset), !state.f.z);
+	uint8_t offset = pc_read();
+	jump(state.pc + static_cast<int8_t>(offset), !state.f.z);
 }
 
 // LD HL,nn
 void CPU::opcode_0x21() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  set_HL(high, low);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	set_HL(high, low);
 }
 
 // LDI (HL),A
 void CPU::opcode_0x22() {
-  memory_write(get_HL(), state.a);
-  set_HL(get_HL() + 1);
+	memory_write(get_HL(), state.a);
+	set_HL(get_HL() + 1);
 }
 
 // INC HL
@@ -150,30 +150,30 @@ void CPU::opcode_0x26() { state.h = pc_read(); }
 
 // DAA
 void CPU::opcode_0x27() {
-  int16_t new_a = static_cast<int16_t>(state.a);
-  if (!state.f.n) {
-    if (state.f.c || (new_a > 0x99)) {
-      new_a += 0x60;
-      state.f.c = 1;
-    }
-    if (state.f.h || ((new_a & 0xF) > 0x9))
-      new_a += 0x6;
-  } else {
-    if (state.f.c)
-      new_a -= 0x60;
-    if (state.f.h)
-      new_a -= 0x6;
-  }
+	int16_t new_a = static_cast<int16_t>(state.a);
+	if (!state.f.n) {
+		if (state.f.c || (new_a > 0x99)) {
+			new_a += 0x60;
+			state.f.c = 1;
+		}
+		if (state.f.h || ((new_a & 0xF) > 0x9))
+			new_a += 0x6;
+	} else {
+		if (state.f.c)
+			new_a -= 0x60;
+		if (state.f.h)
+			new_a -= 0x6;
+	}
 
-  state.f.h = 0;
-  state.a = static_cast<uint8_t>(new_a);
-  state.f.z = (state.a == 0);
+	state.f.h = 0;
+	state.a = static_cast<uint8_t>(new_a);
+	state.f.z = (state.a == 0);
 }
 
 // JR Z,n
 void CPU::opcode_0x28() {
-  uint8_t offset = pc_read();
-  jump(state.pc + static_cast<int8_t>(offset), state.f.z);
+	uint8_t offset = pc_read();
+	jump(state.pc + static_cast<int8_t>(offset), state.f.z);
 }
 
 // ADD HL,HL
@@ -181,8 +181,8 @@ void CPU::opcode_0x29() { add_hl(get_HL()); }
 
 // LDI A,(HL)
 void CPU::opcode_0x2A() {
-  state.a = memory_read(get_HL());
-  set_HL(get_HL() + 1);
+	state.a = memory_read(get_HL());
+	set_HL(get_HL() + 1);
 }
 
 // DEC HL
@@ -199,28 +199,28 @@ void CPU::opcode_0x2E() { state.l = pc_read(); }
 
 // CPL
 void CPU::opcode_0x2F() {
-  state.a ^= 0xFF;
-  state.f.n = 1;
-  state.f.h = 1;
+	state.a ^= 0xFF;
+	state.f.n = 1;
+	state.f.h = 1;
 }
 
 // JR NC,n
 void CPU::opcode_0x30() {
-  uint8_t offset = pc_read();
-  jump(state.pc + static_cast<int8_t>(offset), !state.f.c);
+	uint8_t offset = pc_read();
+	jump(state.pc + static_cast<int8_t>(offset), !state.f.c);
 }
 
 // LD SP,nn
 void CPU::opcode_0x31() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  state.sp = (high << 8) | low;
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	state.sp = (high << 8) | low;
 }
 
 // LDD (HL),A
 void CPU::opcode_0x32() {
-  memory_write(get_HL(), state.a);
-  set_HL(get_HL() - 1);
+	memory_write(get_HL(), state.a);
+	set_HL(get_HL() - 1);
 }
 
 // INC SP
@@ -228,16 +228,16 @@ void CPU::opcode_0x33() { state.sp = inc(state.sp); }
 
 // INC (HL)
 void CPU::opcode_0x34() {
-  uint8_t val = memory_read(get_HL());
-  inc(val);
-  memory_write(get_HL(), val);
+	uint8_t val = memory_read(get_HL());
+	inc(val);
+	memory_write(get_HL(), val);
 }
 
 // DEC (HL)
 void CPU::opcode_0x35() {
-  uint8_t val = memory_read(get_HL());
-  dec(val);
-  memory_write(get_HL(), val);
+	uint8_t val = memory_read(get_HL());
+	dec(val);
+	memory_write(get_HL(), val);
 }
 
 // LD (HL),n
@@ -245,15 +245,15 @@ void CPU::opcode_0x36() { memory_write(get_HL(), pc_read()); }
 
 // SCF
 void CPU::opcode_0x37() {
-  state.f.n = 0;
-  state.f.h = 0;
-  state.f.c = 1;
+	state.f.n = 0;
+	state.f.h = 0;
+	state.f.c = 1;
 }
 
 // JR C,n
 void CPU::opcode_0x38() {
-  uint8_t offset = pc_read();
-  jump(state.pc + static_cast<int8_t>(offset), state.f.c);
+	uint8_t offset = pc_read();
+	jump(state.pc + static_cast<int8_t>(offset), state.f.c);
 }
 
 // ADD HL,SP
@@ -261,8 +261,8 @@ void CPU::opcode_0x39() { add_hl(state.sp); }
 
 // LDD A,(HL)
 void CPU::opcode_0x3A() {
-  state.a = memory_read(get_HL());
-  set_HL(get_HL() - 1);
+	state.a = memory_read(get_HL());
+	set_HL(get_HL() - 1);
 }
 
 // DEC SP
@@ -279,9 +279,9 @@ void CPU::opcode_0x3E() { state.a = pc_read(); }
 
 // CCF
 void CPU::opcode_0x3F() {
-  state.f.n = 0;
-  state.f.h = 0;
-  state.f.c ^= 1;
+	state.f.n = 0;
+	state.f.h = 0;
+	state.f.c ^= 1;
 }
 
 // LD B,B
@@ -676,23 +676,23 @@ void CPU::opcode_0xC1() { set_BC(stack_pop()); }
 
 // JP NZ,nn
 void CPU::opcode_0xC2() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  jump(high, low, !state.f.z);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	jump(high, low, !state.f.z);
 }
 
 // JP nn
 void CPU::opcode_0xC3() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  jump(high, low, true);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	jump(high, low, true);
 }
 
 // CALL NZ,nn
 void CPU::opcode_0xC4() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  call(high, low, !state.f.z);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	call(high, low, !state.f.z);
 }
 
 // PUSH BC
@@ -712,861 +712,861 @@ void CPU::opcode_0xC9() { ret(true); }
 
 // JP Z,nn
 void CPU::opcode_0xCA() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  jump(high, low, state.f.z);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	jump(high, low, state.f.z);
 }
 
 // Ext ops
 void CPU::opcode_0xCB() {
-  uint8_t val;
-  switch (pc_read()) {
-  case 0x00:
-    rlc(state.b);
-    break;
-  case 0x01:
-    rlc(state.c);
-    break;
-  case 0x02:
-    rlc(state.d);
-    break;
-  case 0x03:
-    rlc(state.e);
-    break;
-  case 0x04:
-    rlc(state.h);
-    break;
-  case 0x05:
-    rlc(state.l);
-    break;
-  case 0x06:
-    val = memory_read(get_HL());
-    rlc(val);
-    memory_write(get_HL(), val);
-    break;
-  case 0x07:
-    rlc(state.a);
-    break;
-  case 0x08:
-    rrc(state.b);
-    break;
-  case 0x09:
-    rrc(state.c);
-    break;
-  case 0x0A:
-    rrc(state.d);
-    break;
-  case 0x0B:
-    rrc(state.e);
-    break;
-  case 0x0C:
-    rrc(state.h);
-    break;
-  case 0x0D:
-    rrc(state.l);
-    break;
-  case 0x0E:
-    val = memory_read(get_HL());
-    rrc(val);
-    memory_write(get_HL(), val);
-    break;
-  case 0x0F:
-    rrc(state.a);
-    break;
+	uint8_t val;
+	switch (pc_read()) {
+	case 0x00:
+		rlc(state.b);
+		break;
+	case 0x01:
+		rlc(state.c);
+		break;
+	case 0x02:
+		rlc(state.d);
+		break;
+	case 0x03:
+		rlc(state.e);
+		break;
+	case 0x04:
+		rlc(state.h);
+		break;
+	case 0x05:
+		rlc(state.l);
+		break;
+	case 0x06:
+		val = memory_read(get_HL());
+		rlc(val);
+		memory_write(get_HL(), val);
+		break;
+	case 0x07:
+		rlc(state.a);
+		break;
+	case 0x08:
+		rrc(state.b);
+		break;
+	case 0x09:
+		rrc(state.c);
+		break;
+	case 0x0A:
+		rrc(state.d);
+		break;
+	case 0x0B:
+		rrc(state.e);
+		break;
+	case 0x0C:
+		rrc(state.h);
+		break;
+	case 0x0D:
+		rrc(state.l);
+		break;
+	case 0x0E:
+		val = memory_read(get_HL());
+		rrc(val);
+		memory_write(get_HL(), val);
+		break;
+	case 0x0F:
+		rrc(state.a);
+		break;
 
-  case 0x10:
-    rl(state.b);
-    break;
-  case 0x11:
-    rl(state.c);
-    break;
-  case 0x12:
-    rl(state.d);
-    break;
-  case 0x13:
-    rl(state.e);
-    break;
-  case 0x14:
-    rl(state.h);
-    break;
-  case 0x15:
-    rl(state.l);
-    break;
-  case 0x16:
-    val = memory_read(get_HL());
-    rl(val);
-    memory_write(get_HL(), val);
-    break;
-  case 0x17:
-    rl(state.a);
-    break;
-  case 0x18:
-    rr(state.b);
-    break;
-  case 0x19:
-    rr(state.c);
-    break;
-  case 0x1A:
-    rr(state.d);
-    break;
-  case 0x1B:
-    rr(state.e);
-    break;
-  case 0x1C:
-    rr(state.h);
-    break;
-  case 0x1D:
-    rr(state.l);
-    break;
-  case 0x1E:
-    val = memory_read(get_HL());
-    rr(val);
-    memory_write(get_HL(), val);
-    break;
-  case 0x1F:
-    rr(state.a);
-    break;
+	case 0x10:
+		rl(state.b);
+		break;
+	case 0x11:
+		rl(state.c);
+		break;
+	case 0x12:
+		rl(state.d);
+		break;
+	case 0x13:
+		rl(state.e);
+		break;
+	case 0x14:
+		rl(state.h);
+		break;
+	case 0x15:
+		rl(state.l);
+		break;
+	case 0x16:
+		val = memory_read(get_HL());
+		rl(val);
+		memory_write(get_HL(), val);
+		break;
+	case 0x17:
+		rl(state.a);
+		break;
+	case 0x18:
+		rr(state.b);
+		break;
+	case 0x19:
+		rr(state.c);
+		break;
+	case 0x1A:
+		rr(state.d);
+		break;
+	case 0x1B:
+		rr(state.e);
+		break;
+	case 0x1C:
+		rr(state.h);
+		break;
+	case 0x1D:
+		rr(state.l);
+		break;
+	case 0x1E:
+		val = memory_read(get_HL());
+		rr(val);
+		memory_write(get_HL(), val);
+		break;
+	case 0x1F:
+		rr(state.a);
+		break;
 
-  case 0x20:
-    sla(state.b);
-    break;
-  case 0x21:
-    sla(state.c);
-    break;
-  case 0x22:
-    sla(state.d);
-    break;
-  case 0x23:
-    sla(state.e);
-    break;
-  case 0x24:
-    sla(state.h);
-    break;
-  case 0x25:
-    sla(state.l);
-    break;
-  case 0x26:
-    val = memory_read(get_HL());
-    sla(val);
-    memory_write(get_HL(), val);
-    break;
-  case 0x27:
-    sla(state.a);
-    break;
-  case 0x28:
-    sra(state.b);
-    break;
-  case 0x29:
-    sra(state.c);
-    break;
-  case 0x2A:
-    sra(state.d);
-    break;
-  case 0x2B:
-    sra(state.e);
-    break;
-  case 0x2C:
-    sra(state.h);
-    break;
-  case 0x2D:
-    sra(state.l);
-    break;
-  case 0x2E:
-    val = memory_read(get_HL());
-    sra(val);
-    memory_write(get_HL(), val);
-    break;
-  case 0x2F:
-    sra(state.a);
-    break;
+	case 0x20:
+		sla(state.b);
+		break;
+	case 0x21:
+		sla(state.c);
+		break;
+	case 0x22:
+		sla(state.d);
+		break;
+	case 0x23:
+		sla(state.e);
+		break;
+	case 0x24:
+		sla(state.h);
+		break;
+	case 0x25:
+		sla(state.l);
+		break;
+	case 0x26:
+		val = memory_read(get_HL());
+		sla(val);
+		memory_write(get_HL(), val);
+		break;
+	case 0x27:
+		sla(state.a);
+		break;
+	case 0x28:
+		sra(state.b);
+		break;
+	case 0x29:
+		sra(state.c);
+		break;
+	case 0x2A:
+		sra(state.d);
+		break;
+	case 0x2B:
+		sra(state.e);
+		break;
+	case 0x2C:
+		sra(state.h);
+		break;
+	case 0x2D:
+		sra(state.l);
+		break;
+	case 0x2E:
+		val = memory_read(get_HL());
+		sra(val);
+		memory_write(get_HL(), val);
+		break;
+	case 0x2F:
+		sra(state.a);
+		break;
 
-  case 0x30:
-    swap(state.b);
-    break;
-  case 0x31:
-    swap(state.c);
-    break;
-  case 0x32:
-    swap(state.d);
-    break;
-  case 0x33:
-    swap(state.e);
-    break;
-  case 0x34:
-    swap(state.h);
-    break;
-  case 0x35:
-    swap(state.l);
-    break;
-  case 0x36:
-    val = memory_read(get_HL());
-    swap(val);
-    memory_write(get_HL(), val);
-    break;
-  case 0x37:
-    swap(state.a);
-    break;
-  case 0x38:
-    srl(state.b);
-    break;
-  case 0x39:
-    srl(state.c);
-    break;
-  case 0x3A:
-    srl(state.d);
-    break;
-  case 0x3B:
-    srl(state.e);
-    break;
-  case 0x3C:
-    srl(state.h);
-    break;
-  case 0x3D:
-    srl(state.l);
-    break;
-  case 0x3E:
-    val = memory_read(get_HL());
-    srl(val);
-    memory_write(get_HL(), val);
-    break;
-  case 0x3F:
-    srl(state.a);
-    break;
+	case 0x30:
+		swap(state.b);
+		break;
+	case 0x31:
+		swap(state.c);
+		break;
+	case 0x32:
+		swap(state.d);
+		break;
+	case 0x33:
+		swap(state.e);
+		break;
+	case 0x34:
+		swap(state.h);
+		break;
+	case 0x35:
+		swap(state.l);
+		break;
+	case 0x36:
+		val = memory_read(get_HL());
+		swap(val);
+		memory_write(get_HL(), val);
+		break;
+	case 0x37:
+		swap(state.a);
+		break;
+	case 0x38:
+		srl(state.b);
+		break;
+	case 0x39:
+		srl(state.c);
+		break;
+	case 0x3A:
+		srl(state.d);
+		break;
+	case 0x3B:
+		srl(state.e);
+		break;
+	case 0x3C:
+		srl(state.h);
+		break;
+	case 0x3D:
+		srl(state.l);
+		break;
+	case 0x3E:
+		val = memory_read(get_HL());
+		srl(val);
+		memory_write(get_HL(), val);
+		break;
+	case 0x3F:
+		srl(state.a);
+		break;
 
-  case 0x40:
-    bit(0, state.b);
-    break;
-  case 0x41:
-    bit(0, state.c);
-    break;
-  case 0x42:
-    bit(0, state.d);
-    break;
-  case 0x43:
-    bit(0, state.e);
-    break;
-  case 0x44:
-    bit(0, state.h);
-    break;
-  case 0x45:
-    bit(0, state.l);
-    break;
-  case 0x46:
-    bit(0, memory_read(get_HL()));
-    break;
-  case 0x47:
-    bit(0, state.a);
-    break;
-  case 0x48:
-    bit(1, state.b);
-    break;
-  case 0x49:
-    bit(1, state.c);
-    break;
-  case 0x4A:
-    bit(1, state.d);
-    break;
-  case 0x4B:
-    bit(1, state.e);
-    break;
-  case 0x4C:
-    bit(1, state.h);
-    break;
-  case 0x4D:
-    bit(1, state.l);
-    break;
-  case 0x4E:
-    bit(1, memory_read(get_HL()));
-    break;
-  case 0x4F:
-    bit(1, state.a);
-    break;
+	case 0x40:
+		bit(0, state.b);
+		break;
+	case 0x41:
+		bit(0, state.c);
+		break;
+	case 0x42:
+		bit(0, state.d);
+		break;
+	case 0x43:
+		bit(0, state.e);
+		break;
+	case 0x44:
+		bit(0, state.h);
+		break;
+	case 0x45:
+		bit(0, state.l);
+		break;
+	case 0x46:
+		bit(0, memory_read(get_HL()));
+		break;
+	case 0x47:
+		bit(0, state.a);
+		break;
+	case 0x48:
+		bit(1, state.b);
+		break;
+	case 0x49:
+		bit(1, state.c);
+		break;
+	case 0x4A:
+		bit(1, state.d);
+		break;
+	case 0x4B:
+		bit(1, state.e);
+		break;
+	case 0x4C:
+		bit(1, state.h);
+		break;
+	case 0x4D:
+		bit(1, state.l);
+		break;
+	case 0x4E:
+		bit(1, memory_read(get_HL()));
+		break;
+	case 0x4F:
+		bit(1, state.a);
+		break;
 
-  case 0x50:
-    bit(2, state.b);
-    break;
-  case 0x51:
-    bit(2, state.c);
-    break;
-  case 0x52:
-    bit(2, state.d);
-    break;
-  case 0x53:
-    bit(2, state.e);
-    break;
-  case 0x54:
-    bit(2, state.h);
-    break;
-  case 0x55:
-    bit(2, state.l);
-    break;
-  case 0x56:
-    bit(2, memory_read(get_HL()));
-    break;
-  case 0x57:
-    bit(2, state.a);
-    break;
-  case 0x58:
-    bit(3, state.b);
-    break;
-  case 0x59:
-    bit(3, state.c);
-    break;
-  case 0x5A:
-    bit(3, state.d);
-    break;
-  case 0x5B:
-    bit(3, state.e);
-    break;
-  case 0x5C:
-    bit(3, state.h);
-    break;
-  case 0x5D:
-    bit(3, state.l);
-    break;
-  case 0x5E:
-    bit(3, memory_read(get_HL()));
-    break;
-  case 0x5F:
-    bit(3, state.a);
-    break;
+	case 0x50:
+		bit(2, state.b);
+		break;
+	case 0x51:
+		bit(2, state.c);
+		break;
+	case 0x52:
+		bit(2, state.d);
+		break;
+	case 0x53:
+		bit(2, state.e);
+		break;
+	case 0x54:
+		bit(2, state.h);
+		break;
+	case 0x55:
+		bit(2, state.l);
+		break;
+	case 0x56:
+		bit(2, memory_read(get_HL()));
+		break;
+	case 0x57:
+		bit(2, state.a);
+		break;
+	case 0x58:
+		bit(3, state.b);
+		break;
+	case 0x59:
+		bit(3, state.c);
+		break;
+	case 0x5A:
+		bit(3, state.d);
+		break;
+	case 0x5B:
+		bit(3, state.e);
+		break;
+	case 0x5C:
+		bit(3, state.h);
+		break;
+	case 0x5D:
+		bit(3, state.l);
+		break;
+	case 0x5E:
+		bit(3, memory_read(get_HL()));
+		break;
+	case 0x5F:
+		bit(3, state.a);
+		break;
 
-  case 0x60:
-    bit(4, state.b);
-    break;
-  case 0x61:
-    bit(4, state.c);
-    break;
-  case 0x62:
-    bit(4, state.d);
-    break;
-  case 0x63:
-    bit(4, state.e);
-    break;
-  case 0x64:
-    bit(4, state.h);
-    break;
-  case 0x65:
-    bit(4, state.l);
-    break;
-  case 0x66:
-    bit(4, memory_read(get_HL()));
-    break;
-  case 0x67:
-    bit(4, state.a);
-    break;
-  case 0x68:
-    bit(5, state.b);
-    break;
-  case 0x69:
-    bit(5, state.c);
-    break;
-  case 0x6A:
-    bit(5, state.d);
-    break;
-  case 0x6B:
-    bit(5, state.e);
-    break;
-  case 0x6C:
-    bit(5, state.h);
-    break;
-  case 0x6D:
-    bit(5, state.l);
-    break;
-  case 0x6E:
-    bit(5, memory_read(get_HL()));
-    break;
-  case 0x6F:
-    bit(5, state.a);
-    break;
+	case 0x60:
+		bit(4, state.b);
+		break;
+	case 0x61:
+		bit(4, state.c);
+		break;
+	case 0x62:
+		bit(4, state.d);
+		break;
+	case 0x63:
+		bit(4, state.e);
+		break;
+	case 0x64:
+		bit(4, state.h);
+		break;
+	case 0x65:
+		bit(4, state.l);
+		break;
+	case 0x66:
+		bit(4, memory_read(get_HL()));
+		break;
+	case 0x67:
+		bit(4, state.a);
+		break;
+	case 0x68:
+		bit(5, state.b);
+		break;
+	case 0x69:
+		bit(5, state.c);
+		break;
+	case 0x6A:
+		bit(5, state.d);
+		break;
+	case 0x6B:
+		bit(5, state.e);
+		break;
+	case 0x6C:
+		bit(5, state.h);
+		break;
+	case 0x6D:
+		bit(5, state.l);
+		break;
+	case 0x6E:
+		bit(5, memory_read(get_HL()));
+		break;
+	case 0x6F:
+		bit(5, state.a);
+		break;
 
-  case 0x70:
-    bit(6, state.b);
-    break;
-  case 0x71:
-    bit(6, state.c);
-    break;
-  case 0x72:
-    bit(6, state.d);
-    break;
-  case 0x73:
-    bit(6, state.e);
-    break;
-  case 0x74:
-    bit(6, state.h);
-    break;
-  case 0x75:
-    bit(6, state.l);
-    break;
-  case 0x76:
-    bit(6, memory_read(get_HL()));
-    break;
-  case 0x77:
-    bit(6, state.a);
-    break;
-  case 0x78:
-    bit(7, state.b);
-    break;
-  case 0x79:
-    bit(7, state.c);
-    break;
-  case 0x7A:
-    bit(7, state.d);
-    break;
-  case 0x7B:
-    bit(7, state.e);
-    break;
-  case 0x7C:
-    bit(7, state.h);
-    break;
-  case 0x7D:
-    bit(7, state.l);
-    break;
-  case 0x7E:
-    bit(7, memory_read(get_HL()));
-    break;
-  case 0x7F:
-    bit(7, state.a);
-    break;
+	case 0x70:
+		bit(6, state.b);
+		break;
+	case 0x71:
+		bit(6, state.c);
+		break;
+	case 0x72:
+		bit(6, state.d);
+		break;
+	case 0x73:
+		bit(6, state.e);
+		break;
+	case 0x74:
+		bit(6, state.h);
+		break;
+	case 0x75:
+		bit(6, state.l);
+		break;
+	case 0x76:
+		bit(6, memory_read(get_HL()));
+		break;
+	case 0x77:
+		bit(6, state.a);
+		break;
+	case 0x78:
+		bit(7, state.b);
+		break;
+	case 0x79:
+		bit(7, state.c);
+		break;
+	case 0x7A:
+		bit(7, state.d);
+		break;
+	case 0x7B:
+		bit(7, state.e);
+		break;
+	case 0x7C:
+		bit(7, state.h);
+		break;
+	case 0x7D:
+		bit(7, state.l);
+		break;
+	case 0x7E:
+		bit(7, memory_read(get_HL()));
+		break;
+	case 0x7F:
+		bit(7, state.a);
+		break;
 
-  case 0x80:
-    res(0, state.b);
-    break;
-  case 0x81:
-    res(0, state.c);
-    break;
-  case 0x82:
-    res(0, state.d);
-    break;
-  case 0x83:
-    res(0, state.e);
-    break;
-  case 0x84:
-    res(0, state.h);
-    break;
-  case 0x85:
-    res(0, state.l);
-    break;
-  case 0x86:
-    val = memory_read(get_HL());
-    res(0, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0x87:
-    res(0, state.a);
-    break;
-  case 0x88:
-    res(1, state.b);
-    break;
-  case 0x89:
-    res(1, state.c);
-    break;
-  case 0x8A:
-    res(1, state.d);
-    break;
-  case 0x8B:
-    res(1, state.e);
-    break;
-  case 0x8C:
-    res(1, state.h);
-    break;
-  case 0x8D:
-    res(1, state.l);
-    break;
-  case 0x8E:
-    val = memory_read(get_HL());
-    res(1, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0x8F:
-    res(1, state.a);
-    break;
+	case 0x80:
+		res(0, state.b);
+		break;
+	case 0x81:
+		res(0, state.c);
+		break;
+	case 0x82:
+		res(0, state.d);
+		break;
+	case 0x83:
+		res(0, state.e);
+		break;
+	case 0x84:
+		res(0, state.h);
+		break;
+	case 0x85:
+		res(0, state.l);
+		break;
+	case 0x86:
+		val = memory_read(get_HL());
+		res(0, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0x87:
+		res(0, state.a);
+		break;
+	case 0x88:
+		res(1, state.b);
+		break;
+	case 0x89:
+		res(1, state.c);
+		break;
+	case 0x8A:
+		res(1, state.d);
+		break;
+	case 0x8B:
+		res(1, state.e);
+		break;
+	case 0x8C:
+		res(1, state.h);
+		break;
+	case 0x8D:
+		res(1, state.l);
+		break;
+	case 0x8E:
+		val = memory_read(get_HL());
+		res(1, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0x8F:
+		res(1, state.a);
+		break;
 
-  case 0x90:
-    res(2, state.b);
-    break;
-  case 0x91:
-    res(2, state.c);
-    break;
-  case 0x92:
-    res(2, state.d);
-    break;
-  case 0x93:
-    res(2, state.e);
-    break;
-  case 0x94:
-    res(2, state.h);
-    break;
-  case 0x95:
-    res(2, state.l);
-    break;
-  case 0x96:
-    val = memory_read(get_HL());
-    res(2, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0x97:
-    res(2, state.a);
-    break;
-  case 0x98:
-    res(3, state.b);
-    break;
-  case 0x99:
-    res(3, state.c);
-    break;
-  case 0x9A:
-    res(3, state.d);
-    break;
-  case 0x9B:
-    res(3, state.e);
-    break;
-  case 0x9C:
-    res(3, state.h);
-    break;
-  case 0x9D:
-    res(3, state.l);
-    break;
-  case 0x9E:
-    val = memory_read(get_HL());
-    res(3, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0x9F:
-    res(3, state.a);
-    break;
+	case 0x90:
+		res(2, state.b);
+		break;
+	case 0x91:
+		res(2, state.c);
+		break;
+	case 0x92:
+		res(2, state.d);
+		break;
+	case 0x93:
+		res(2, state.e);
+		break;
+	case 0x94:
+		res(2, state.h);
+		break;
+	case 0x95:
+		res(2, state.l);
+		break;
+	case 0x96:
+		val = memory_read(get_HL());
+		res(2, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0x97:
+		res(2, state.a);
+		break;
+	case 0x98:
+		res(3, state.b);
+		break;
+	case 0x99:
+		res(3, state.c);
+		break;
+	case 0x9A:
+		res(3, state.d);
+		break;
+	case 0x9B:
+		res(3, state.e);
+		break;
+	case 0x9C:
+		res(3, state.h);
+		break;
+	case 0x9D:
+		res(3, state.l);
+		break;
+	case 0x9E:
+		val = memory_read(get_HL());
+		res(3, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0x9F:
+		res(3, state.a);
+		break;
 
-  case 0xA0:
-    res(4, state.b);
-    break;
-  case 0xA1:
-    res(4, state.c);
-    break;
-  case 0xA2:
-    res(4, state.d);
-    break;
-  case 0xA3:
-    res(4, state.e);
-    break;
-  case 0xA4:
-    res(4, state.h);
-    break;
-  case 0xA5:
-    res(4, state.l);
-    break;
-  case 0xA6:
-    val = memory_read(get_HL());
-    res(4, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0xA7:
-    res(4, state.a);
-    break;
-  case 0xA8:
-    res(5, state.b);
-    break;
-  case 0xA9:
-    res(5, state.c);
-    break;
-  case 0xAA:
-    res(5, state.d);
-    break;
-  case 0xAB:
-    res(5, state.e);
-    break;
-  case 0xAC:
-    res(5, state.h);
-    break;
-  case 0xAD:
-    res(5, state.l);
-    break;
-  case 0xAE:
-    val = memory_read(get_HL());
-    res(5, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0xAF:
-    res(5, state.a);
-    break;
+	case 0xA0:
+		res(4, state.b);
+		break;
+	case 0xA1:
+		res(4, state.c);
+		break;
+	case 0xA2:
+		res(4, state.d);
+		break;
+	case 0xA3:
+		res(4, state.e);
+		break;
+	case 0xA4:
+		res(4, state.h);
+		break;
+	case 0xA5:
+		res(4, state.l);
+		break;
+	case 0xA6:
+		val = memory_read(get_HL());
+		res(4, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0xA7:
+		res(4, state.a);
+		break;
+	case 0xA8:
+		res(5, state.b);
+		break;
+	case 0xA9:
+		res(5, state.c);
+		break;
+	case 0xAA:
+		res(5, state.d);
+		break;
+	case 0xAB:
+		res(5, state.e);
+		break;
+	case 0xAC:
+		res(5, state.h);
+		break;
+	case 0xAD:
+		res(5, state.l);
+		break;
+	case 0xAE:
+		val = memory_read(get_HL());
+		res(5, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0xAF:
+		res(5, state.a);
+		break;
 
-  case 0xB0:
-    res(6, state.b);
-    break;
-  case 0xB1:
-    res(6, state.c);
-    break;
-  case 0xB2:
-    res(6, state.d);
-    break;
-  case 0xB3:
-    res(6, state.e);
-    break;
-  case 0xB4:
-    res(6, state.h);
-    break;
-  case 0xB5:
-    res(6, state.l);
-    break;
-  case 0xB6:
-    val = memory_read(get_HL());
-    res(6, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0xB7:
-    res(6, state.a);
-    break;
-  case 0xB8:
-    res(7, state.b);
-    break;
-  case 0xB9:
-    res(7, state.c);
-    break;
-  case 0xBA:
-    res(7, state.d);
-    break;
-  case 0xBB:
-    res(7, state.e);
-    break;
-  case 0xBC:
-    res(7, state.h);
-    break;
-  case 0xBD:
-    res(7, state.l);
-    break;
-  case 0xBE:
-    val = memory_read(get_HL());
-    res(7, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0xBF:
-    res(7, state.a);
-    break;
+	case 0xB0:
+		res(6, state.b);
+		break;
+	case 0xB1:
+		res(6, state.c);
+		break;
+	case 0xB2:
+		res(6, state.d);
+		break;
+	case 0xB3:
+		res(6, state.e);
+		break;
+	case 0xB4:
+		res(6, state.h);
+		break;
+	case 0xB5:
+		res(6, state.l);
+		break;
+	case 0xB6:
+		val = memory_read(get_HL());
+		res(6, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0xB7:
+		res(6, state.a);
+		break;
+	case 0xB8:
+		res(7, state.b);
+		break;
+	case 0xB9:
+		res(7, state.c);
+		break;
+	case 0xBA:
+		res(7, state.d);
+		break;
+	case 0xBB:
+		res(7, state.e);
+		break;
+	case 0xBC:
+		res(7, state.h);
+		break;
+	case 0xBD:
+		res(7, state.l);
+		break;
+	case 0xBE:
+		val = memory_read(get_HL());
+		res(7, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0xBF:
+		res(7, state.a);
+		break;
 
-  case 0xC0:
-    set(0, state.b);
-    break;
-  case 0xC1:
-    set(0, state.c);
-    break;
-  case 0xC2:
-    set(0, state.d);
-    break;
-  case 0xC3:
-    set(0, state.e);
-    break;
-  case 0xC4:
-    set(0, state.h);
-    break;
-  case 0xC5:
-    set(0, state.l);
-    break;
-  case 0xC6:
-    val = memory_read(get_HL());
-    set(0, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0xC7:
-    set(0, state.a);
-    break;
-  case 0xC8:
-    set(1, state.b);
-    break;
-  case 0xC9:
-    set(1, state.c);
-    break;
-  case 0xCA:
-    set(1, state.d);
-    break;
-  case 0xCB:
-    set(1, state.e);
-    break;
-  case 0xCC:
-    set(1, state.h);
-    break;
-  case 0xCD:
-    set(1, state.l);
-    break;
-  case 0xCE:
-    val = memory_read(get_HL());
-    set(1, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0xCF:
-    set(1, state.a);
-    break;
+	case 0xC0:
+		set(0, state.b);
+		break;
+	case 0xC1:
+		set(0, state.c);
+		break;
+	case 0xC2:
+		set(0, state.d);
+		break;
+	case 0xC3:
+		set(0, state.e);
+		break;
+	case 0xC4:
+		set(0, state.h);
+		break;
+	case 0xC5:
+		set(0, state.l);
+		break;
+	case 0xC6:
+		val = memory_read(get_HL());
+		set(0, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0xC7:
+		set(0, state.a);
+		break;
+	case 0xC8:
+		set(1, state.b);
+		break;
+	case 0xC9:
+		set(1, state.c);
+		break;
+	case 0xCA:
+		set(1, state.d);
+		break;
+	case 0xCB:
+		set(1, state.e);
+		break;
+	case 0xCC:
+		set(1, state.h);
+		break;
+	case 0xCD:
+		set(1, state.l);
+		break;
+	case 0xCE:
+		val = memory_read(get_HL());
+		set(1, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0xCF:
+		set(1, state.a);
+		break;
 
-  case 0xD0:
-    set(2, state.b);
-    break;
-  case 0xD1:
-    set(2, state.c);
-    break;
-  case 0xD2:
-    set(2, state.d);
-    break;
-  case 0xD3:
-    set(2, state.e);
-    break;
-  case 0xD4:
-    set(2, state.h);
-    break;
-  case 0xD5:
-    set(2, state.l);
-    break;
-  case 0xD6:
-    val = memory_read(get_HL());
-    set(2, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0xD7:
-    set(2, state.a);
-    break;
-  case 0xD8:
-    set(3, state.b);
-    break;
-  case 0xD9:
-    set(3, state.c);
-    break;
-  case 0xDA:
-    set(3, state.d);
-    break;
-  case 0xDB:
-    set(3, state.e);
-    break;
-  case 0xDC:
-    set(3, state.h);
-    break;
-  case 0xDD:
-    set(3, state.l);
-    break;
-  case 0xDE:
-    val = memory_read(get_HL());
-    set(3, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0xDF:
-    set(3, state.a);
-    break;
+	case 0xD0:
+		set(2, state.b);
+		break;
+	case 0xD1:
+		set(2, state.c);
+		break;
+	case 0xD2:
+		set(2, state.d);
+		break;
+	case 0xD3:
+		set(2, state.e);
+		break;
+	case 0xD4:
+		set(2, state.h);
+		break;
+	case 0xD5:
+		set(2, state.l);
+		break;
+	case 0xD6:
+		val = memory_read(get_HL());
+		set(2, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0xD7:
+		set(2, state.a);
+		break;
+	case 0xD8:
+		set(3, state.b);
+		break;
+	case 0xD9:
+		set(3, state.c);
+		break;
+	case 0xDA:
+		set(3, state.d);
+		break;
+	case 0xDB:
+		set(3, state.e);
+		break;
+	case 0xDC:
+		set(3, state.h);
+		break;
+	case 0xDD:
+		set(3, state.l);
+		break;
+	case 0xDE:
+		val = memory_read(get_HL());
+		set(3, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0xDF:
+		set(3, state.a);
+		break;
 
-  case 0xE0:
-    set(4, state.b);
-    break;
-  case 0xE1:
-    set(4, state.c);
-    break;
-  case 0xE2:
-    set(4, state.d);
-    break;
-  case 0xE3:
-    set(4, state.e);
-    break;
-  case 0xE4:
-    set(4, state.h);
-    break;
-  case 0xE5:
-    set(4, state.l);
-    break;
-  case 0xE6:
-    val = memory_read(get_HL());
-    set(4, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0xE7:
-    set(4, state.a);
-    break;
-  case 0xE8:
-    set(5, state.b);
-    break;
-  case 0xE9:
-    set(5, state.c);
-    break;
-  case 0xEA:
-    set(5, state.d);
-    break;
-  case 0xEB:
-    set(5, state.e);
-    break;
-  case 0xEC:
-    set(5, state.h);
-    break;
-  case 0xED:
-    set(5, state.l);
-    break;
-  case 0xEE:
-    val = memory_read(get_HL());
-    set(5, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0xEF:
-    set(5, state.a);
-    break;
+	case 0xE0:
+		set(4, state.b);
+		break;
+	case 0xE1:
+		set(4, state.c);
+		break;
+	case 0xE2:
+		set(4, state.d);
+		break;
+	case 0xE3:
+		set(4, state.e);
+		break;
+	case 0xE4:
+		set(4, state.h);
+		break;
+	case 0xE5:
+		set(4, state.l);
+		break;
+	case 0xE6:
+		val = memory_read(get_HL());
+		set(4, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0xE7:
+		set(4, state.a);
+		break;
+	case 0xE8:
+		set(5, state.b);
+		break;
+	case 0xE9:
+		set(5, state.c);
+		break;
+	case 0xEA:
+		set(5, state.d);
+		break;
+	case 0xEB:
+		set(5, state.e);
+		break;
+	case 0xEC:
+		set(5, state.h);
+		break;
+	case 0xED:
+		set(5, state.l);
+		break;
+	case 0xEE:
+		val = memory_read(get_HL());
+		set(5, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0xEF:
+		set(5, state.a);
+		break;
 
-  case 0xF0:
-    set(6, state.b);
-    break;
-  case 0xF1:
-    set(6, state.c);
-    break;
-  case 0xF2:
-    set(6, state.d);
-    break;
-  case 0xF3:
-    set(6, state.e);
-    break;
-  case 0xF4:
-    set(6, state.h);
-    break;
-  case 0xF5:
-    set(6, state.l);
-    break;
-  case 0xF6:
-    val = memory_read(get_HL());
-    set(6, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0xF7:
-    set(6, state.a);
-    break;
-  case 0xF8:
-    set(7, state.b);
-    break;
-  case 0xF9:
-    set(7, state.c);
-    break;
-  case 0xFA:
-    set(7, state.d);
-    break;
-  case 0xFB:
-    set(7, state.e);
-    break;
-  case 0xFC:
-    set(7, state.h);
-    break;
-  case 0xFD:
-    set(7, state.l);
-    break;
-  case 0xFE:
-    val = memory_read(get_HL());
-    set(7, val);
-    memory_write(get_HL(), val);
-    break;
-  case 0xFF:
-    set(7, state.a);
-    break;
-  }
+	case 0xF0:
+		set(6, state.b);
+		break;
+	case 0xF1:
+		set(6, state.c);
+		break;
+	case 0xF2:
+		set(6, state.d);
+		break;
+	case 0xF3:
+		set(6, state.e);
+		break;
+	case 0xF4:
+		set(6, state.h);
+		break;
+	case 0xF5:
+		set(6, state.l);
+		break;
+	case 0xF6:
+		val = memory_read(get_HL());
+		set(6, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0xF7:
+		set(6, state.a);
+		break;
+	case 0xF8:
+		set(7, state.b);
+		break;
+	case 0xF9:
+		set(7, state.c);
+		break;
+	case 0xFA:
+		set(7, state.d);
+		break;
+	case 0xFB:
+		set(7, state.e);
+		break;
+	case 0xFC:
+		set(7, state.h);
+		break;
+	case 0xFD:
+		set(7, state.l);
+		break;
+	case 0xFE:
+		val = memory_read(get_HL());
+		set(7, val);
+		memory_write(get_HL(), val);
+		break;
+	case 0xFF:
+		set(7, state.a);
+		break;
+	}
 }
 
 // CALL Z,nn
 void CPU::opcode_0xCC() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  call(high, low, state.f.z);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	call(high, low, state.f.z);
 }
 
 // CALL nn
 void CPU::opcode_0xCD() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  call(high, low, true);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	call(high, low, true);
 }
 
 // ADC A,n
@@ -1583,9 +1583,9 @@ void CPU::opcode_0xD1() { set_DE(stack_pop()); }
 
 // JP NC,nn
 void CPU::opcode_0xD2() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  jump(high, low, !state.f.c);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	jump(high, low, !state.f.c);
 }
 
 // Illegal instruction
@@ -1593,9 +1593,9 @@ void CPU::opcode_0xD3() { hanging = true; }
 
 // CALL NC,nn
 void CPU::opcode_0xD4() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  call(high, low, !state.f.c);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	call(high, low, !state.f.c);
 }
 
 // PUSH DE
@@ -1612,15 +1612,15 @@ void CPU::opcode_0xD8() { ret(state.f.c); }
 
 // RETI
 void CPU::opcode_0xD9() {
-  ret(true);
-  state.interrupts_enabled = true;
+	ret(true);
+	state.interrupts_enabled = true;
 }
 
 // JP C,nn
 void CPU::opcode_0xDA() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  jump(high, low, state.f.c);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	jump(high, low, state.f.c);
 }
 
 // Illegal instruction
@@ -1628,9 +1628,9 @@ void CPU::opcode_0xDB() { hanging = true; }
 
 // CALL C,nn
 void CPU::opcode_0xDC() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  call(high, low, state.f.c);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	call(high, low, state.f.c);
 }
 
 // Illegal instruction
@@ -1674,9 +1674,9 @@ void CPU::opcode_0xE9() { jump(state.h, state.l, true); }
 
 // LD (nn),A
 void CPU::opcode_0xEA() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  memory_write((high << 8) | low, state.a);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	memory_write((high << 8) | low, state.a);
 }
 
 // Illegal instruction
@@ -1726,9 +1726,9 @@ void CPU::opcode_0xF9() { state.sp = get_HL(); }
 
 // LD A,(nn)
 void CPU::opcode_0xFA() {
-  uint8_t low = pc_read();
-  uint8_t high = pc_read();
-  state.a = memory_read((high << 8) | low);
+	uint8_t low = pc_read();
+	uint8_t high = pc_read();
+	state.a = memory_read((high << 8) | low);
 }
 
 // EI

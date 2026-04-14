@@ -1,38 +1,41 @@
 #pragma once
 
+#include <atomic>
+
 #include "apu.h"
 #include "cpu.h"
 #include "gbs_reader.h"
 #include "mixer.h"
-#include "player.h"
+
 #include "systemclock.h"
-#include <atomic>
+
+#include "player.h"
 
 class GameBoy {
-public:
-  GameBoy(GBSContent &gbs_content);
+  public:
+	GameBoy(GBSContent& gbs_content);
 
-  // Main loop
-  void run();
+	// Main loop
+	void run();
 
-  // The player needs this. Not very elegant
-  Mixer &get_mixer();
+	// The player needs this. Not very elegant
+	Mixer& get_mixer();
 
-  void set_player(Player *player);
+	void set_player(Player* player);
 
-  void next_song();
-  void prev_song();
+	void next_song();
+	void prev_song();
 
-private:
-  SystemClock clock;
-  APU apu;
-  CPU cpu;
-  Player *player;
+  private:
+	SystemClock clock;
+	APU apu;
+	CPU cpu;
+	Player* player;
 
-  GBSContent gbs_content;
+	GBSContent gbs_content;
 
-  uint8_t curr_song;
+	uint8_t curr_song;
 
-  std::atomic<bool> play_next_song;
-  std::atomic<bool> play_prev_song;
+	std::atomic<bool> play_next_song;
+	std::atomic<bool> play_prev_song;
 };

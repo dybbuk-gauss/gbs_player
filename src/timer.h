@@ -1,37 +1,36 @@
 #pragma once
 
 #include "timer_listener.h"
-#include <vector>
 #include <cstdint>
+#include <vector>
 
 class Channel;
 
-class Timer
-{
-public:
-    Timer(uint64_t frequency = 0);
+class Timer {
+  public:
+	Timer(uint64_t frequency = 0);
 
-    void set_frequency(uint64_t frequency);
-    uint64_t get_frequency();
+	void set_frequency(uint64_t frequency);
+	uint64_t get_frequency();
 
-    void add_listener(TimerListener* listener);
+	void add_listener(TimerListener* listener);
 
-    void clock();
+	void clock();
 
-    // Note: the clock method will still be called by the system clock.
-    // This method just decides whether the clock should be ignored or
-    // not. It's not necessary to start the timer if it was not
-    // previously stopped.
-    void set_running(bool running);
+	// Note: the clock method will still be called by the system clock.
+	// This method just decides whether the clock should be ignored or
+	// not. It's not necessary to start the timer if it was not
+	// previously stopped.
+	void set_running(bool running);
 
-    // true if in the first half of the current period
-    bool is_first_half();
+	// true if in the first half of the current period
+	bool is_first_half();
 
-private:
-    uint64_t frequency;
-    uint64_t period; // in clock cycles
-    uint64_t counter; // down-counter
-    bool running;
-    
-    std::vector<TimerListener*> listeners;
+  private:
+	uint64_t frequency;
+	uint64_t period;  // in clock cycles
+	uint64_t counter; // down-counter
+	bool running;
+
+	std::vector<TimerListener*> listeners;
 };

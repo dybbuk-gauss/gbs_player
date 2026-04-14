@@ -1,23 +1,22 @@
 #pragma once
 
-#include <vector>
 #include "timer.h"
+#include <vector>
 
-class SystemClock
-{
-public:
-    static const uint64_t CLOCK_RATE = 4194304;
-    
-    SystemClock();
+class SystemClock {
+  public:
+	static const uint64_t CLOCK_RATE = 4194304;
 
-    void add_timer(Timer* timer);
+	SystemClock();
 
-    void clock();
+	void add_timer(Timer* timer);
 
-private:
-    // not copyable
-    SystemClock(const SystemClock&);
-    SystemClock& operator = (const SystemClock&);
+	void clock();
 
-    std::vector<Timer*> timers;
+  private:
+	// not copyable
+	SystemClock(const SystemClock&);
+	SystemClock& operator=(const SystemClock&);
+
+	std::vector<Timer*> timers;
 };
