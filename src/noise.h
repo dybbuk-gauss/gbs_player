@@ -2,6 +2,10 @@
 
 #include "channel.h"
 
+/**
+ * @class Noise
+ * @brief It models the noise channel of the Game Boy.
+ */
 class Noise : public Channel {
   public:
 	Noise();

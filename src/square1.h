@@ -5,6 +5,11 @@
 
 // SquareCh1 is exactly like SquareCh2, except that it
 // also can do frequency sweeps
+
+/**
+ * @class Square1
+ * @brief It models the square channel 1 of the Game Boy.
+ */
 class Square1 : public Square2 {
   public:
 	Square1();

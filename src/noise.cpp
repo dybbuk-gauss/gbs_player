@@ -1,15 +1,28 @@
 #include "noise.h"
 #include <cassert>
 
+/**
+ * @brief Construct a new Noise::Noise object
+ */
 Noise::Noise()
 	: clock_shift(0), width_mode(false), divisor(0), shift_register(0xFFFF) {}
 
+/**
+ * @brief Trigger the noise channel
+ */
 void Noise::trigger() {
 	channel_enabled = true;
 	shift_register = 0xFFFF;
 	Channel::trigger();
 }
 
+/**
+ * @brief Set the parameters of the noise channel
+ *
+ * @param clock_shift The clock shift
+ * @param width_mode The width mode
+ * @param divisor The divisor
+ */
 void Noise::set_parameters(uint8_t clock_shift, uint8_t width_mode,
 						   uint8_t divisor) {
 	assert(clock_shift < 16);
@@ -25,22 +38,51 @@ void Noise::set_parameters(uint8_t clock_shift, uint8_t width_mode,
 	set_timer_frequency((1048576 / (divisor + 1)) >> (clock_shift + 1));
 }
 
+/**
+ * @brief Get the clock shift
+ *
+ * @return uint8_t The clock shift
+ */
 uint8_t Noise::get_clock_shift() { return clock_shift; }
 
+/**
+ * @brief Get the width mode
+ *
+ * @return uint8_t The width mode
+ */
 uint8_t Noise::get_width_mode() { return width_mode; }
 
+/**
+ * @brief Get the divisor
+ *
+ * @return uint8_t The divisor
+ */
 uint8_t Noise::get_divisor() { return divisor; }
 
+/**
+ * @brief Write to the NRx0 register
+ *
+ * @param value The value to write
+ */
 void Noise::NRx0_write(uint8_t /*value*/) {
 	// not used
 }
 
+/**
+ * @brief Write to the NRx1 register
+ *
+ * @param value The value to write
+ */
 void Noise::NRx1_write(uint8_t value) {
 	uint8_t length_load = value & 0x3F;
 	set_length_counter(length_load);
 }
 
-// Same as in Square2
+/**
+ * @brief Write to the NRx2 register
+ *
+ * @param value The value to write
+ */
 void Noise::NRx2_write(uint8_t value) {
 	uint8_t volume = value >> 4;
 	uint8_t envelope_mode = (value >> 3) & 1;
@@ -49,6 +91,11 @@ void Noise::NRx2_write(uint8_t value) {
 	set_envelope(envelope_period, envelope_mode);
 }
 
+/**
+ * @brief Write to the NRx3 register
+ *
+ * @param value The value to write
+ */
 void Noise::NRx3_write(uint8_t value) {
 	uint8_t clock_shift = (value >> 4) & 0xF;
 	uint8_t width_mode = (value >> 3) & 1;
@@ -56,6 +103,11 @@ void Noise::NRx3_write(uint8_t value) {
 	set_parameters(clock_shift, width_mode, divisor_code);
 }
 
+/**
+ * @brief Write to the NRx4 register
+ *
+ * @param value The value to write
+ */
 void Noise::NRx4_write(uint8_t value) {
 	uint8_t do_trigger = value >> 7;
 	uint8_t length_enable = (value >> 6) & 1;
@@ -65,25 +117,56 @@ void Noise::NRx4_write(uint8_t value) {
 		trigger();
 }
 
+/**
+ * @brief Read from the NRx0 register but not used.
+ *
+ * @return uint8_t The value to return is always 0.
+ */
 uint8_t Noise::NRx0_read() {
 	// Not used
 	return 0;
 }
 
+/**
+ * @brief Read from the NRx1 register.
+ *
+ * @return uint8_t valuse from NRx1 register
+ */
 uint8_t Noise::NRx1_read() { return length_counter & 0x3F; }
 
+/**
+ * @brief Read from the NRx2 register
+ *
+ * @return uint8_t value from NRx2 register
+ */
 uint8_t Noise::NRx2_read() {
 	return (starting_volume << 4) | (envelope_add << 3) | envelope_period;
 }
 
+/**
+ * @brief Read from the NRx3 register.
+ *
+ * @return uint8_t value from NRx3 register
+ */
 uint8_t Noise::NRx3_read() {
 	return (clock_shift << 4) | (width_mode << 3) | divisor;
 }
 
+/**
+ * @brief Read from the NRx4 register.
+ *
+ * @return uint8_t value from NRx4 register
+ */
 uint8_t Noise::NRx4_read() { return length_counter_enabled << 6; }
 
-// Note: compared to VBA-M, the noise sounds a bit harsh. This may be because
-// VBA-M does some kind of high-pass filter
+/**
+ * @brief Get the next phase of the noise channel.
+ *
+ * @note compared to VBA-M, the noise sounds a bit harsh. This may be because
+ * VBA-M does some kind of high-pass filter.
+ *
+ * @return uint8_t The next phase
+ */
 uint8_t Noise::next_phase() {
 	// Simple LFSR implementation
 	uint16_t bit = ((shift_register >> 0) ^ (shift_register >> 1)) & 1;

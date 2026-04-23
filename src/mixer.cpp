@@ -1,17 +1,42 @@
 #include "mixer.h"
 #include <cassert>
 
+/**
+ * @brief Construct a new Mixer::Mixer object
+ */
 Mixer::Mixer() : buf_ready(false) {
 	timer.add_listener(this);
 	timer.set_frequency(SAMPLE_RATE);
 }
 
+/**
+ * @brief Add a channel to the mixer
+ *
+ * @param channel The channel to add
+ */
 void Mixer::add_channel(Channel* channel) { channels.push_back(channel); }
 
+/**
+ * @brief Check if the buffer is ready
+ *
+ * @return true If the buffer is ready
+ * @return false Otherwise
+ */
 bool Mixer::buffer_ready() { return buf_ready; }
 
+/**
+ * @brief Get the timer
+ *
+ * @return Timer& The timer
+ */
 Timer& Mixer::get_timer() { return timer; }
 
+/**
+ * @brief Set the master volume
+ *
+ * @param left The left master volume
+ * @param right The right master volume
+ */
 void Mixer::set_master_volume(uint8_t left, uint8_t right) {
 	assert(left < 8);
 	assert(right < 8);
@@ -19,10 +44,25 @@ void Mixer::set_master_volume(uint8_t left, uint8_t right) {
 	master_volume_right = right;
 }
 
+/**
+ * @brief Get the left master volume
+ *
+ * @return uint8_t The left master volume
+ */
 uint8_t Mixer::get_master_volume_left() { return master_volume_left; }
 
+/**
+ * @brief Get the right master volume
+ *
+ * @return uint8_t The right master volume
+ */
 uint8_t Mixer::get_master_volume_right() { return master_volume_right; }
 
+/**
+ * @brief Pop the buffer
+ *
+ * @return std::vector<int16_t> The buffer
+ */
 std::vector<int16_t> Mixer::pop_buffer() {
 	std::lock_guard<std::mutex> lock(buf_mutex);
 
@@ -40,8 +80,16 @@ std::vector<int16_t> Mixer::pop_buffer() {
 	return vec;
 }
 
+/**
+ * @brief Clock the mixer
+ *
+ * @param timer The timer
+ */
 void Mixer::clock(Timer* /*timer*/) { poll_channels(); }
 
+/**
+ * @brief Poll the channels and mix the samples
+ */
 void Mixer::poll_channels() {
 	int16_t left_sample = 0;
 	int16_t right_sample = 0;

@@ -3,6 +3,11 @@
 #include <iostream>
 #include <iterator>
 
+/**
+ * @brief Load the GBS file from a given filename
+ *
+ * @param filename The filename to load
+ */
 void GBSReader::load_file(std::string filename) {
 	std::ifstream file(filename, std::ios::binary);
 
@@ -26,8 +31,18 @@ void GBSReader::load_file(std::string filename) {
 	file.close();
 }
 
+/**
+ * @brief Get the GBS content
+ *
+ * @return GBSContent& The GBS content
+ */
 GBSContent& GBSReader::get_content() { return content; }
 
+/**
+ * @brief Print the metadata of the GBS file
+ *
+ * @param verbose Whether to print the verbose metadata
+ */
 void GBSReader::print_metadata(bool verbose) {
 	if (verbose) {
 		std::cout << "GBS version:      "
@@ -52,10 +67,15 @@ void GBSReader::print_metadata(bool verbose) {
 	std::cout << "Copyright:        " << content.copyright << "\n";
 }
 
+/**
+ * @brief Parse the GBS file
+ *
+ * @param buf The raw bytes of the GBS file
+ */
 void GBSReader::parse_file(std::vector<uint8_t>& buf) {
 	// Make sure that the file is at least as big as the header
 	if (buf.size() < 0x70)
-		throw ParsingError("Incomplete header (file too small)");
+		throw ParsingError("Incomplete header (file is too small)");
 
 	// Check identifier string
 	if (!(buf[0x0] == 'G' && buf[0x1] == 'B' && buf[0x2] == 'S'))

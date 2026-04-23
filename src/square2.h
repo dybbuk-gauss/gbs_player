@@ -3,6 +3,10 @@
 #include "channel.h"
 #include <cstdint>
 
+/**
+ * @class Square2
+ * @brief It models the square channel 2 of the Game Boy.
+ */
 class Square2 : public Channel {
   public:
 	Square2();

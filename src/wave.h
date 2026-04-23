@@ -3,6 +3,10 @@
 #include "channel.h"
 #include <array>
 
+/**
+ * @class Wave
+ * @brief It models the wave channel of the Game Boy.
+ */
 class Wave : public Channel {
   public:
 	Wave();

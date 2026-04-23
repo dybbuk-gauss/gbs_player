@@ -3,6 +3,11 @@
 #include <chrono>
 #include <thread>
 
+/**
+ * @brief Construct a new APU::APU object
+ *
+ * @param clock The system clock to use for the APU
+ */
 APU::APU(SystemClock& clock) : frame_sequencer(256), power_on(true) {
 	// Make the system clock clock the frame sequencer & all channels
 	clock.add_timer(&frame_sequencer);
@@ -45,8 +50,19 @@ APU::APU(SystemClock& clock) : frame_sequencer(256), power_on(true) {
 	reset();
 }
 
+/**
+ * @brief Get the mixer
+ *
+ * @return Mixer& The mixer
+ */
 Mixer& APU::get_mixer() { return mixer; }
 
+/**
+ * @brief Write a value to a register
+ *
+ * @param addr The address of the register
+ * @param value The value to write
+ */
 void APU::register_write(uint16_t addr, uint8_t value) {
 	assert(addr >= 0xFF10 && addr <= 0xFF3F);
 
@@ -80,6 +96,12 @@ void APU::register_write(uint16_t addr, uint8_t value) {
 	}
 }
 
+/**
+ * @brief Read a value from a register
+ *
+ * @param addr The address of the register
+ * @return uint8_t The value of the register
+ */
 uint8_t APU::register_read(uint16_t addr) {
 	assert(addr >= 0xFF10 && addr <= 0xFF3F);
 
@@ -112,6 +134,9 @@ uint8_t APU::register_read(uint16_t addr) {
 	return 0xFF;
 }
 
+/**
+ * @brief Reset the APU
+ */
 void APU::reset() {
 	// Default values
 	// NR1x
@@ -161,6 +186,9 @@ void APU::reset() {
 	register_write(0xFF3F, 0xDA);
 }
 
+/**
+ * @brief Play a short sound to verify that the APU is working
+ */
 void APU::boot_sound() {
 	// Setup
 	register_write(0xFF23, 0x80); // Turn APU power on
@@ -182,6 +210,11 @@ void APU::boot_sound() {
 	register_write(0xFF14, 0x87);
 }
 
+/**
+ * @brief Write a value to the NR50 register
+ *
+ * @param value The value to write
+ */
 void APU::NR50_write(uint8_t value) {
 	uint8_t vin_left = (value >> 7) & 1;
 	uint8_t volume_left = (value >> 4) & 7;
@@ -195,6 +228,11 @@ void APU::NR50_write(uint8_t value) {
 	mixer.set_master_volume(volume_left, volume_right);
 }
 
+/**
+ * @brief Write a value to the NR51 register
+ *
+ * @param value The value to write
+ */
 void APU::NR51_write(uint8_t value) {
 	uint8_t noise_left = (value >> 7) & 1;
 	uint8_t wave_left = (value >> 6) & 1;
@@ -212,6 +250,11 @@ void APU::NR51_write(uint8_t value) {
 	noise.enable_speakers(noise_left, noise_right);
 }
 
+/**
+ * @brief Write a value to the NR52 register
+ *
+ * @param value The value to write
+ */
 void APU::NR52_write(uint8_t value) {
 	uint8_t power_on = value >> 7;
 	if (!power_on) {
@@ -231,6 +274,11 @@ void APU::NR52_write(uint8_t value) {
 	this->power_on = power_on;
 }
 
+/**
+ * @brief Read a value from the NR50 register
+ *
+ * @return uint8_t The value of the register
+ */
 uint8_t APU::NR50_read() {
 	uint8_t volume_left = mixer.get_master_volume_left();
 	uint8_t volume_right = mixer.get_master_volume_right();
@@ -238,6 +286,11 @@ uint8_t APU::NR50_read() {
 		   volume_right;
 }
 
+/**
+ * @brief Read a value from the NR51 register
+ *
+ * @return uint8_t The value of the register
+ */
 uint8_t APU::NR51_read() {
 	uint8_t noise_left = noise.is_left_speaker_enabled();
 	uint8_t noise_right = noise.is_right_speaker_enabled();
@@ -252,6 +305,11 @@ uint8_t APU::NR51_read() {
 		   (square2_right << 1) | square1_right;
 }
 
+/**
+ * @brief Read a value from the NR52 register
+ *
+ * @return uint8_t The value of the register
+ */
 uint8_t APU::NR52_read() {
 	uint8_t noise_enabled = noise.is_channel_enabled();
 	uint8_t wave_enabled = wave.is_channel_enabled();

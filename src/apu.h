@@ -9,6 +9,10 @@
 #include "wave.h"
 
 // Audio Processing Unit
+
+/**
+ * @brief It controls all audio registers and sound generation.
+ */
 class APU {
   public:
 	APU(SystemClock& clock);
@@ -24,6 +28,10 @@ class APU {
 
 	// This should not really be in APU itself, but rather some
 	// external test class. Defined in apu_test.cpp
+
+	/**
+	 * @brief Runs the APU tests.
+	 */
 	void run_tests();
 
   private:

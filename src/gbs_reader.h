@@ -4,11 +4,23 @@
 #include <string>
 #include <vector>
 
+/**
+ * @class ParsingError
+ * @brief Exception thrown when parsing a GBS file fails.
+ */
 class ParsingError : public std::runtime_error {
   public:
+	/**
+	 * @brief Constructor
+	 * @param message Error message
+	 */
 	ParsingError(const std::string& message) : std::runtime_error(message) {}
 };
 
+/**
+ * @struct GBSContent
+ * @brief Structure to store the content of a GBS file.
+ */
 struct GBSContent {
 	uint8_t version;
 	uint8_t num_songs;
@@ -25,6 +37,12 @@ struct GBSContent {
 	std::vector<uint8_t> code;
 };
 
+/**
+ * @class GBSReader
+ * @brief Reads and parses GBS files.
+ * @details Reads GBS (Game Boy Sound) files and extracts their metadata and
+ *          code.
+ */
 class GBSReader {
   public:
 	void load_file(std::string filename);

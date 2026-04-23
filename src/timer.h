@@ -6,6 +6,10 @@
 
 class Channel;
 
+/**
+ * @class Timer
+ * @brief Basic timer class with variable frequency
+ */
 class Timer {
   public:
 	Timer(uint64_t frequency = 0);

@@ -119,3 +119,6 @@ int main(int argc, char* argv[]) {
 
 	return 0;
 }
+
+// I need a function to call timeEndPeriod(1) function even i quit program with
+// intrupt key.

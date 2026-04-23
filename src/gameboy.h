@@ -11,6 +11,9 @@
 
 #include "player.h"
 
+/**
+ * @brief Emulates the Game Boy.
+ */
 class GameBoy {
   public:
 	GameBoy(GBSContent& gbs_content);

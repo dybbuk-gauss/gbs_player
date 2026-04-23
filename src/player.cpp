@@ -3,9 +3,17 @@
 
 #include "player.h"
 
+/**
+ * @brief Constructor of the Player:: Player class
+ *
+ * @param mixer The mixer to use
+ */
 Player::Player(Mixer& mixer)
 	: mixer(mixer), hWaveOut(nullptr), running(false) {}
 
+/**
+ * @brief Destructor of the Player:: Player class
+ */
 Player::~Player() {
 	{
 		std::lock_guard<std::mutex> lock(mtx);
@@ -24,6 +32,9 @@ Player::~Player() {
 	}
 }
 
+/**
+ * @brief Reset and initialize the player
+ */
 void Player::init() {
 	WAVEFORMATEX wfx;
 	wfx.wFormatTag = WAVE_FORMAT_PCM;
@@ -43,6 +54,9 @@ void Player::init() {
 	audio_thread = std::thread(&Player::audio_loop, this);
 }
 
+/**
+ * @brief Play the next buffer
+ */
 void Player::play() {
 	if (mixer.buffer_ready()) {
 		std::vector<int16_t> b = mixer.pop_buffer();
@@ -54,6 +68,9 @@ void Player::play() {
 	}
 }
 
+/**
+ * @brief Clear the buffer queue
+ */
 void Player::clear_queue() {
 	std::lock_guard<std::mutex> lock(mtx);
 	while (!buffer_queue.empty()) {
@@ -65,6 +82,11 @@ void Player::clear_queue() {
 	}
 }
 
+/**
+ * @brief Audio loop
+ *
+ * @note This function is called by the audio thread
+ */
 void Player::audio_loop() {
 	while (true) {
 		std::vector<int16_t> current_buffer;
@@ -101,6 +123,11 @@ void Player::audio_loop() {
 	}
 }
 
+/**
+ * @brief Clean the finished (played) buffers
+ *
+ * @note This function is called by the audio loop.
+ */
 void Player::clean_finished_buffers() {
 	while (!active_buffers.empty()) {
 		WaveBuffer* wb = active_buffers.front();
@@ -114,11 +141,21 @@ void Player::clean_finished_buffers() {
 	}
 }
 
+/**
+ * @brief Check if there are any queued buffers
+ *
+ * @return true if there are any queued buffers
+ */
 bool Player::has_queued_buffers() {
 	std::lock_guard<std::mutex> lock(mtx);
 	return !buffer_queue.empty();
 }
 
+/**
+ * @brief Get the number of queued buffers
+ *
+ * @return size_t The number of queued buffers
+ */
 size_t Player::get_queue_size() {
 	std::lock_guard<std::mutex> lock(mtx);
 	return buffer_queue.size();

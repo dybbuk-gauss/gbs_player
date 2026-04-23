@@ -13,6 +13,10 @@
 
 #include "mixer.h"
 
+/**
+ * @class Player
+ * @brief Handles audio playback using Windows WaveOut API
+ */
 class Player {
   public:
 	Player(Mixer& mixer);

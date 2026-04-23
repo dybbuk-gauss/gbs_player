@@ -9,9 +9,9 @@
 CPU::CPU(APU& apu)
 	: apu(apu), load_addr(0), sp_start(0), branch_taken(false), hanging(false),
 	  halted(false), stopped(false) {
-	// Calculated from this sheet:
-	// http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html We assume that
-	// invalid opcodes use 4 cycles (doesn't really matter)
+	/// Calculated from this sheet:
+	/// http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html We assume
+	/// that invalid opcodes use 4 cycles (doesn't really matter)
 	opcode_cycles = {
 		4,	12, 8, 8,  4,  4,  8,  4,  20, 8,  8, 8,  4,  4,  8,  4,  4,  12, 8,
 		8,	4,	4, 8,  4,  12, 8,  8,  8,  4,  4, 8,  4,  8,  12, 8,  8,  4,  4,
@@ -177,8 +177,8 @@ uint32_t CPU::get_interrupt_rate() {
 		counter_rate = 16384;
 		break;
 	}
-	return SystemClock::CLOCK_RATE /
-		   (counter_rate / (256 - state.memory[0xFF06]));
+	return SystemClock::CLOCK_RATE * (256 - state.memory[0xFF06]) /
+		   counter_rate;
 }
 
 bool CPU::is_hanging() { return hanging; }

@@ -2,20 +2,38 @@
 #include "util.h"
 #include <cassert>
 
+/**
+ * @brief Constructor
+ */
 Square2::Square2() : curr_phase(0), duty_cycle(2) { set_frequency(1024); }
 
+/**
+ * @brief Triggers the channel
+ */
 void Square2::trigger() {
 	channel_enabled = true;
 	Channel::trigger();
 }
 
+/**
+ * @brief Sets the duty cycle of the channel
+ * @param duty_cycle Duty cycle (0-3)
+ */
 void Square2::set_duty_cycle(uint8_t duty_cycle) {
 	assert(duty_cycle < 4);
 	this->duty_cycle = duty_cycle;
 }
 
+/**
+ * @brief Gets the duty cycle of the channel
+ * @return Duty cycle (0-3)
+ */
 uint8_t Square2::get_duty_cycle() { return duty_cycle; }
 
+/**
+ * @brief Sets the frequency of the channel
+ * @param freq Frequency (0-2047)
+ */
 void Square2::set_frequency(uint16_t freq) {
 	assert(freq < 2048);
 	this->freq = freq;
@@ -23,12 +41,24 @@ void Square2::set_frequency(uint16_t freq) {
 	set_timer_frequency(util::to_true_freq(freq) * 8);
 }
 
+/**
+ * @brief Gets the frequency of the channel
+ * @return Frequency (0-2047)
+ */
 uint16_t Square2::get_frequency() { return freq; }
 
+/**
+ * @brief Writes to the NRx0 register
+ * @param value Value to write
+ */
 void Square2::NRx0_write(uint8_t /*value*/) {
 	// Not used
 }
 
+/**
+ * @brief Writes to the NRx1 register
+ * @param value Value to write
+ */
 void Square2::NRx1_write(uint8_t value) {
 	uint8_t duty = value >> 6;
 	uint8_t length = value & 0x3F;
@@ -36,6 +66,10 @@ void Square2::NRx1_write(uint8_t value) {
 	set_length_counter(length);
 }
 
+/**
+ * @brief Writes to the NRx2 register
+ * @param value Value to write
+ */
 void Square2::NRx2_write(uint8_t value) {
 	uint8_t volume = value >> 4;
 	uint8_t envelope_mode = (value >> 3) & 1;
@@ -44,6 +78,11 @@ void Square2::NRx2_write(uint8_t value) {
 	set_envelope(envelope_period, envelope_mode);
 }
 
+/**
+ * @brief Writes to the NRx3 register
+ * @param value Value to write
+ */
+
 void Square2::NRx3_write(uint8_t value) {
 	uint8_t frequency_lower = value;
 	uint16_t frequency = get_frequency();
@@ -51,6 +90,10 @@ void Square2::NRx3_write(uint8_t value) {
 	set_frequency(new_freq);
 }
 
+/**
+ * @brief Writes to the NRx4 register
+ * @param value Value to write
+ */
 void Square2::NRx4_write(uint8_t value) {
 	uint8_t do_trigger = value >> 7;
 	uint8_t length_enable = (value >> 6) & 1;
@@ -65,26 +108,50 @@ void Square2::NRx4_write(uint8_t value) {
 		trigger();
 }
 
+/**
+ * @brief Reads from the NRx0 register
+ * @return Value read
+ */
 uint8_t Square2::NRx0_read() {
 	// Not used
 	return 0;
 }
 
+/**
+ * @brief Reads from the NRx1 register
+ * @return Value read
+ */
 uint8_t Square2::NRx1_read() {
 	return (duty_cycle << 6) | (length_counter & 0x3F);
 }
 
+/**
+ * @brief Reads from the NRx2 register
+ * @return Value read
+ */
 uint8_t Square2::NRx2_read() {
 	return (starting_volume << 4) | (envelope_add << 3) | envelope_period;
 }
 
+/**
+ * @brief Reads from the NRx3 register
+ * @return Value read
+ */
 uint8_t Square2::NRx3_read() { return freq & 0xFF; }
 
+/**
+ * @brief Reads from the NRx4 register
+ * @return Value read
+ */
 uint8_t Square2::NRx4_read() {
 	// Ignore the trigger bit
 	return (length_counter_enabled << 6) | ((freq >> 8) & 7);
 }
 
+/**
+ * @brief Gets the next phase of the waveform
+ * @return Next phase (0-15)
+ */
 uint8_t Square2::next_phase() {
 	uint8_t flip;
 	switch (duty_cycle) {

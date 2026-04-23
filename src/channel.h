@@ -3,13 +3,14 @@
 #include "timer.h"
 #include <cstdint>
 
+/**
+ * @class Channel
+ * @brief Abstact class that defines common functions of sound channels
+ */
 class Channel : public TimerListener {
   public:
 	Channel();
 
-	// Returns the most recently clocked sample value
-	// NOTE: the returned value is 4 bit. Only the lower 4 bits
-	// are used, the upper 4 bits will be 0
 	uint8_t get_sample();
 
 	virtual void clock(Timer* timer);
@@ -20,16 +21,16 @@ class Channel : public TimerListener {
 	// (not the value that is written to the register)
 	void set_timer_frequency(uint64_t frequency);
 
-	// volume is in range [0, 15] (0 is off, 15 is loudest)
-	// if set_dac_enabled is true, the dac will enabled or disabled
-	// depending on the value of volume
 	void set_volume(uint8_t volume, bool set_dac_enabled = true);
 	uint8_t get_volume();
 	virtual double get_true_volume();
 
 	void set_length_counter(uint16_t length_counter);
+
 	uint16_t get_length_counter();
+
 	void enable_length_counter(bool enabled);
+
 	bool is_length_counter_enabled();
 
 	void set_channel_enabled(bool enabled);

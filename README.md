@@ -46,5 +46,3 @@ Author:           Hirokazu Tanaka
 Copyright:        1989 Nintendo
 Playing song no. 1
 ```
-
-_cue music_

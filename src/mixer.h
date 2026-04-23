@@ -6,17 +6,20 @@
 #include <cstdint>
 #include <mutex>
 
-/*
- * Functions as both a Mixer and resampler. Maybe consider splitting it up,
- * especially if the resampling part is to be improved
+/**
+ * @class Mixer
+ * @brief It models the mixer of the Game Boy.
  */
 class Mixer : public TimerListener {
   public:
+	// The sample rate of the Game Boy is 4,194,304 Hz, but we resample it to
+	// 44,100 Hz for the player
+
 	static const int SAMPLE_RATE = 44100;
 
 	// the buffer must contain at least this amount of samples
 	// before it can be considered ready
-	const unsigned int buffer_threshold = 2048;
+	const unsigned int buffer_threshold = 4096;
 
 	Mixer();
 

@@ -4,6 +4,9 @@
 #include <array>
 #include <vector>
 
+/**
+ * @brief Emulates Sharp LR35902 (Z80-based) CPU.
+ */
 class CPU {
   public:
 	CPU(APU& apu);
@@ -51,13 +54,14 @@ class CPU {
 		opcode_cycles_branch; // extra cycles when branching
 
 	struct CPUState {
+		/* 8-bit registers:  */
 		uint8_t a;
 		uint8_t b;
 		uint8_t c;
 		uint8_t d;
 		uint8_t e;
-		uint8_t h;
-		uint8_t l;
+		uint8_t h;	 // H and L form the 16-bit register HL
+		uint8_t l;	 // H and L form the 16-bit register HL
 		uint16_t sp; // stack pointer
 		uint16_t pc; // program counter
 

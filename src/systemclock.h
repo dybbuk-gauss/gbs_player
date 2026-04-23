@@ -3,6 +3,10 @@
 #include "timer.h"
 #include <vector>
 
+/**
+ * @class SystemClock
+ * @brief It models the system clock of the Game Boy.
+ */
 class SystemClock {
   public:
 	static const uint64_t CLOCK_RATE = 4194304;
