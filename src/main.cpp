@@ -88,6 +88,7 @@ int main(int argc, char* argv[]) {
 				} else if (ch == 'p' || ch == 'P') {
 					game_boy.prev_song();
 				} else if (ch == 'q' || ch == 'Q') {
+					g_running = false;
 					game_boy.quit();
 					break;
 				}
