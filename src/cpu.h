@@ -6,6 +6,7 @@
 
 /**
  * @brief Emulates Sharp LR35902 (Z80-based) CPU.
+ * @see http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
  */
 class CPU {
   public:

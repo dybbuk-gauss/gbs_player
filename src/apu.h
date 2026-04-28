@@ -29,11 +29,6 @@ class APU {
 	// This should not really be in APU itself, but rather some
 	// external test class. Defined in apu_test.cpp
 
-	/**
-	 * @brief Runs the APU tests.
-	 */
-	void run_tests();
-
   private:
 	Square1 square1;
 	Square2 square2;

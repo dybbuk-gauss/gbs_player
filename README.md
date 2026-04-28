@@ -1,9 +1,13 @@
 # gbs_player
 
+## Description
+
 A program for playing Game Boy sound (.gbs) files.
 
+### Features
+
 modified for windows compatibility
-from Original repository : https://github.com/frestr/gbs-player 
+* **Original repository**: [https://github.com/frestr/gbs-player](https://github.com/frestr/gbs-player)
 
 ## Compile
 
