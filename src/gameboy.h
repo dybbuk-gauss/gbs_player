@@ -28,6 +28,7 @@ class GameBoy {
 
 	void next_song();
 	void prev_song();
+	void quit();
 
   private:
 	SystemClock clock;
@@ -41,4 +42,5 @@ class GameBoy {
 
 	std::atomic<bool> play_next_song;
 	std::atomic<bool> play_prev_song;
+	std::atomic<bool> g_quit_requested;
 };

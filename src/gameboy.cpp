@@ -5,8 +5,6 @@
 #include <iostream>
 #include <thread>
 
-extern std::atomic<bool> g_quit_requested;
-
 /**
  * @brief Construct a new GameBoy::GameBoy object
  *
@@ -17,6 +15,7 @@ GameBoy::GameBoy(GBSContent& gbs_content) : apu(clock), cpu(apu) {
 	apu.reset();
 	this->gbs_content = gbs_content;
 	curr_song = gbs_content.first_song;
+	this->g_quit_requested = false;
 }
 
 /**
@@ -46,6 +45,7 @@ void GameBoy::run() {
 	bool init_done = false;
 
 	bool testing = false;
+	this->g_quit_requested = false;
 
 	uint32_t cycles;
 	uint32_t instr_cycles;
@@ -153,3 +153,8 @@ void GameBoy::next_song() { play_next_song = true; }
  * @brief Set the previous song to play
  */
 void GameBoy::prev_song() { play_prev_song = true; }
+
+/**
+ * @brief Set the quit requested
+ */
+void GameBoy::quit() { g_quit_requested = true; }

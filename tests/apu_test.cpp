@@ -4,11 +4,6 @@
 #include <tuple>
 
 #include <gtest/gtest.h>
-#include <atomic>
-
-// 전역 변수 정의 (gameboy.cpp 등에서 extern으로 참조함)
-std::atomic<bool> g_quit_requested(false);
-std::atomic<bool> g_running(true);
 
 // 테스트를 위한 픽스처 클래스
 class APURegisterTest

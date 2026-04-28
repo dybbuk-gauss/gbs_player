@@ -10,11 +10,6 @@
 // #pragma comment(lib, "winmm.lib")
 #endif
 
-// 전역 변수로 관리 (인풋 스레드 제어용)
-// global variables for controlling input thread
-std::atomic<bool> g_running(true);
-std::atomic<bool> g_quit_requested(false);
-
 int main(int argc, char* argv[]) {
 #ifdef _WIN32
 	// Windows의 시스템 타이머 해상도를 1ms로 정밀하게 설정
@@ -22,7 +17,7 @@ int main(int argc, char* argv[]) {
 	SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 	timeBeginPeriod(1);
 #endif
-
+	std::atomic<bool> g_running(true);
 	if (argc < 2) {
 		std::cout << "Usage: " << argv[0] << " <gbs-file> [track-number]\n";
 		return 1;
@@ -84,7 +79,7 @@ int main(int argc, char* argv[]) {
 // 실시간 키 입력 처리를 위한 스레드 (Windows 전용)
 // realtime processing thread for keyboard input (Windows only)
 #ifdef _WIN32
-	std::thread input_thread([&game_boy]() {
+	std::thread input_thread([&game_boy, &g_running]() {
 		while (g_running) {
 			if (_kbhit()) {
 				int ch = _getch();
@@ -93,7 +88,7 @@ int main(int argc, char* argv[]) {
 				} else if (ch == 'p' || ch == 'P') {
 					game_boy.prev_song();
 				} else if (ch == 'q' || ch == 'Q') {
-					g_quit_requested = true;
+					game_boy.quit();
 					break;
 				}
 			}
