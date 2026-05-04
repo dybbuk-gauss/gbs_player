@@ -91,15 +91,15 @@ void GBSReader::parse_file(std::vector<uint8_t>& buf) {
 		throw ParsingError("First song number >= number of songs");
 
 	content.load_addr = (buf[0x7] << 8) | buf[0x6];
-	if (content.load_addr < 0x0400 || content.load_addr > 0x7FFF)
+	if (content.load_addr < 0x0000 || content.load_addr > 0x7FFF)
 		throw ParsingError("Invalid load adress");
 
 	content.init_addr = (buf[0x9] << 8) | buf[0x8];
-	if (content.init_addr < 0x0400 || content.init_addr > 0x7FFF)
+	if (content.init_addr < 0x0000 || content.init_addr > 0x7FFF)
 		throw ParsingError("Invalid init adress");
 
 	content.play_addr = (buf[0xB] << 8) | buf[0xA];
-	if (content.play_addr < 0x0400 || content.play_addr > 0x7FFF)
+	if (content.play_addr < 0x0000 || content.play_addr > 0x7FFF)
 		throw ParsingError("Invalid play adress");
 
 	content.stack_pointer = (buf[0xD] << 8) | buf[0xC];
